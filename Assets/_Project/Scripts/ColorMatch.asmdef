@@ -2,7 +2,9 @@
     "name": "ColorMatch",
     "rootNamespace": "ColorMatch",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UnityEngine.UI",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
