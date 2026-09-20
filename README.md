@@ -13,7 +13,7 @@ Portrait orientation, one-thumb controls, three difficulty levels.
 
 | Menu | Gameplay |
 |---|---|
-| <img src="docs/menu.png" width="320" alt="Main menu with difficulty selection" /> | <img src="docs/gameplay.png" width="320" alt="Gameplay" /> |
+| <img src="img/menu.png" width="320" alt="Main menu with difficulty selection" /> | <img src="img/gameplay.png" width="320" alt="Gameplay" /> |
 
 ## How to play
 
