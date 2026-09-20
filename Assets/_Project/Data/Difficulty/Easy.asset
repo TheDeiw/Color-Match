@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ColorMatch::ColorMatch.Data.DifficultySettings
   id: easy
   displayName: EASY
-  roundDuration: 60
+  roundDuration: 20
   spawnDelayRange: {x: 0.9, y: 1.6}
   fallSpeedRange: {x: 2, y: 2.8}
   colorDuration: 8

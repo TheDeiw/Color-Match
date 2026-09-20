@@ -24,12 +24,15 @@ namespace ColorMatch.Core
         public event Action<float> TimeChanged;
         public event Action RoundEnded;
         public event Action<CatchResult> CatchResolved;
+        public event Action Paused;
+        public event Action Resumed;
 
         public DifficultySettings Difficulty { get; private set; }
         public int Score { get; private set; }
         public int BestScore => ScoreStorage.GetBest(Difficulty);
         public float TimeLeft { get; private set; }
         public bool IsRunning { get; private set; }
+        public bool IsPaused { get; private set; }
 
         private void Awake()
         {
@@ -63,6 +66,26 @@ namespace ColorMatch.Core
             TimeChanged?.Invoke(TimeLeft);
 
             if (TimeLeft <= 0f) EndRound();
+        }
+
+        // The round timer runs on scaled time, so freezing it is all a pause needs.
+        // A finished round cannot be paused: IsRunning already guards timeScale.
+        public void Pause()
+        {
+            if (!IsRunning || IsPaused) return;
+
+            IsPaused = true;
+            Time.timeScale = 0f;
+            Paused?.Invoke();
+        }
+
+        public void Resume()
+        {
+            if (!IsPaused) return;
+
+            IsPaused = false;
+            Time.timeScale = 1f;
+            Resumed?.Invoke();
         }
 
         private void EndRound()

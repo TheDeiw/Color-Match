@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ColorMatch::ColorMatch.Data.DifficultySettings
   id: normal
   displayName: NORMAL
-  roundDuration: 60
+  roundDuration: 20
   spawnDelayRange: {x: 0.6, y: 1.4}
   fallSpeedRange: {x: 2.5, y: 3.5}
   colorDuration: 6
