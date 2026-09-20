@@ -7,7 +7,7 @@ Portrait orientation, one-thumb controls, three difficulty levels.
 ## Demo
 
 - **Itch.io:** https://thedeiw.itch.io/color-match
-- **APK:** Install in section Packages
+- **APK:** Install in section "Releases"
 
 ## Screenshots
 
