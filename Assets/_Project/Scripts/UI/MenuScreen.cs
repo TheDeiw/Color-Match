@@ -1,4 +1,6 @@
+using System;
 using ColorMatch.Core;
+using ColorMatch.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,18 +9,44 @@ namespace ColorMatch.UI
 {
     public class MenuScreen : MonoBehaviour
     {
-        [SerializeField] private Button startButton;
-        [SerializeField] private TMP_Text bestLabel;
+        [Serializable]
+        private struct DifficultyOption
+        {
+            public DifficultySettings difficulty;
+            public Button button;
+            public TMP_Text bestLabel;
+        }
 
-        private void OnEnable() => startButton.onClick.AddListener(SceneFlow.LoadGame);
+        [SerializeField] private DifficultyOption[] options;
 
-        private void OnDisable() => startButton.onClick.RemoveListener(SceneFlow.LoadGame);
+        private void OnEnable()
+        {
+            foreach (DifficultyOption option in options)
+            {
+                DifficultySettings difficulty = option.difficulty;
+                option.button.onClick.AddListener(() => StartGame(difficulty));
+            }
+        }
+
+        private void OnDisable()
+        {
+            // Lambda listeners cannot be removed one by one; these buttons belong to this screen alone.
+            foreach (DifficultyOption option in options)
+                option.button.onClick.RemoveAllListeners();
+        }
 
         private void Start()
         {
-            // Entering the menu from a finished round would otherwise keep time frozen.
             Time.timeScale = 1f;
-            bestLabel.text = ScoreStorage.BestScore.ToString();
+
+            foreach (DifficultyOption option in options)
+                option.bestLabel.text = "BEST " + ScoreStorage.GetBest(option.difficulty);
+        }
+
+        private static void StartGame(DifficultySettings difficulty)
+        {
+            DifficultySelection.Select(difficulty);
+            SceneFlow.LoadGame();
         }
     }
 }

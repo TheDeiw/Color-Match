@@ -30,6 +30,13 @@ namespace ColorMatch.Gameplay.Basket
 
         private void Update()
         {
+            // A finished round pauses time; the joystick must not appear over the results panel.
+            if (Time.timeScale == 0f)
+            {
+                if (_isActive) End();
+                return;
+            }
+
             Pointer pointer = Pointer.current;
             if (pointer == null) return;
 

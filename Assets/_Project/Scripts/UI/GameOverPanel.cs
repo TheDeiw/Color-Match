@@ -38,7 +38,7 @@ namespace ColorMatch.UI
         private void OnRoundEnded()
         {
             scoreLabel.text = gameManager.Score.ToString();
-            bestLabel.text = ScoreStorage.BestScore.ToString();
+            bestLabel.text = gameManager.BestScore.ToString();
             root.SetActive(true);
         }
     }

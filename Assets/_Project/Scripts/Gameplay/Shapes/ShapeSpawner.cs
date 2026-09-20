@@ -11,12 +11,8 @@ namespace ColorMatch.Gameplay.Shapes
         [SerializeField] private FallingShape[] prefabs;
         [SerializeField] private ShapePalette palette;
 
-        [Header("Timing")]
-        [SerializeField] private Vector2 spawnDelayRange = new Vector2(0.6f, 1.4f);
-
         [Header("Randomization")]
         [SerializeField] private Vector2 scaleRange = new Vector2(0.35f, 0.55f);
-        [SerializeField] private Vector2 fallSpeedRange = new Vector2(2.5f, 3.5f);
         [SerializeField] private Vector2 angularVelocityRange = new Vector2(-180f, 180f);
 
         [Header("Placement")]
@@ -26,6 +22,10 @@ namespace ColorMatch.Gameplay.Shapes
         [Header("Pool")]
         [SerializeField] private int defaultCapacity = 8;
         [SerializeField] private int maxSize = 32;
+
+        // Overwritten by Configure; the initial values only matter if no difficulty is applied.
+        private Vector2 _spawnDelayRange = new Vector2(0.6f, 1.4f);
+        private Vector2 _fallSpeedRange = new Vector2(2.5f, 3.5f);
 
         private ObjectPool<FallingShape>[] _pools;
         private Camera _mainCamera;
@@ -41,6 +41,12 @@ namespace ColorMatch.Gameplay.Shapes
         }
 
         private void OnEnable() => StartCoroutine(SpawnLoop());
+
+        public void Configure(DifficultySettings difficulty)
+        {
+            _spawnDelayRange = difficulty.SpawnDelayRange;
+            _fallSpeedRange = difficulty.FallSpeedRange;
+        }
 
         private void CacheBounds()
         {
@@ -83,7 +89,7 @@ namespace ColorMatch.Gameplay.Shapes
         {
             while (true)
             {
-                yield return new WaitForSeconds(Random.Range(spawnDelayRange.x, spawnDelayRange.y));
+                yield return new WaitForSeconds(Random.Range(_spawnDelayRange.x, _spawnDelayRange.y));
                 Spawn();
             }
         }
@@ -101,7 +107,7 @@ namespace ColorMatch.Gameplay.Shapes
                 color: palette.GetColor(colorIndex),
                 scale: Random.Range(scaleRange.x, scaleRange.y),
                 rotation: Random.Range(0f, 360f),
-                fallSpeed: Random.Range(fallSpeedRange.x, fallSpeedRange.y),
+                fallSpeed: Random.Range(_fallSpeedRange.x, _fallSpeedRange.y),
                 angularVelocity: Random.Range(angularVelocityRange.x, angularVelocityRange.y)
                 );
         }

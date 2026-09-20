@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd8f48d113fd714897f46867ac42b0c, type: 3}
+  m_Name: Easy
+  m_EditorClassIdentifier: ColorMatch::ColorMatch.Data.DifficultySettings
+  id: easy
+  displayName: EASY
+  roundDuration: 60
+  spawnDelayRange: {x: 0.9, y: 1.6}
+  fallSpeedRange: {x: 2, y: 2.8}
+  colorDuration: 8
+  pointsPerMatch: 10
+  penaltyPerWrongCatch: 3

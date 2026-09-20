@@ -7,7 +7,6 @@ namespace ColorMatch.Gameplay
     public class TargetColor : MonoBehaviour
     {
         [SerializeField] private ShapePalette palette;
-        [SerializeField] private float duration = 6f;
 
         public event Action<int> Changed;
         public event Action<float> Ticked;
@@ -15,7 +14,10 @@ namespace ColorMatch.Gameplay
         public int CurrentIndex { get; private set; } = -1;
         public Color CurrentColor => palette.GetColor(CurrentIndex);
 
+        private float _duration = 6f;
         private float _timeLeft;
+
+        public void Configure(DifficultySettings difficulty) => _duration = difficulty.ColorDuration;
 
         // The first colour is picked in Start rather than Awake: by then every view
         // has subscribed in its own OnEnable and will receive the event.
@@ -27,7 +29,7 @@ namespace ColorMatch.Gameplay
 
             if (_timeLeft <= 0f) PickNext();
 
-            Ticked?.Invoke(_timeLeft / duration);
+            Ticked?.Invoke(_timeLeft / _duration);
         }
 
         private void PickNext()
@@ -38,7 +40,7 @@ namespace ColorMatch.Gameplay
             while (next == CurrentIndex) next = palette.RandomIndex();
 
             CurrentIndex = next;
-            _timeLeft = duration;
+            _timeLeft = _duration;
             Changed?.Invoke(CurrentIndex);
         }
     }
