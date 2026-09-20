@@ -1,56 +1,50 @@
 # Color Match
 
-Казуальна мобільна аркада на Unity. Зверху падають різнокольорові фігури, а внизу — кошик, який гравець водить плаваючим джойстиком. Кошик періодично перефарбовується, і ловити треба лише фігури його поточного кольору: за влучні +очки, за чужий колір — штраф. Раунд триває обмежений час, після чого показується результат і рекорд.
+A casual mobile arcade game made with Unity. Coloured shapes fall from the top of the screen while the player drags a basket along the bottom with a floating joystick. The basket changes colour every few seconds, and only shapes of its current colour should be caught: a match scores points, a wrong colour costs them. A round lasts a fixed time, after which the score and the best result are shown.
 
-Портретна орієнтація, керування одним пальцем, три рівні складності.
+Portrait orientation, one-thumb controls, three difficulty levels.
 
-## Демо
+## Demo
 
-<!-- Замініть посилання, коли буде збірка -->
-- **WebGL:** _скоро_
-- **APK:** _скоро_
+<!-- Replace these links once a build is available -->
+- **WebGL:** _coming soon_
+- **APK:** _coming soon_
 
-## Скриншоти
+## Screenshots
 
-| Меню | Геймплей |
+| Menu | Gameplay |
 |---|---|
-| <img src="docs/menu.png" width="320" alt="Головне меню з вибором складності" /> | <img src="docs/gameplay.png" width="320" alt="Ігровий процес" /> |
+| <img src="docs/menu.png" width="320" alt="Main menu with difficulty selection" /> | <img src="docs/gameplay.png" width="320" alt="Gameplay" /> |
 
-## Як грати
+## How to play
 
-- Тягніть пальцем будь-де на екрані — під пальцем з'явиться джойстик, який рухає кошик горизонтально.
-- У лівому куті показано поточний цільовий колір і кільце, що відлічує час до його зміни. У цей самий колір пофарбований і кошик.
-- Спіймана фігура потрібного кольору додає очки, чужого — віднімає. Пропущені фігури не штрафуються.
-- Раунд закінчується, коли спливає час. Рекорд зберігається окремо для кожного рівня складності.
+- Drag anywhere on the screen — a joystick appears under your finger and moves the basket horizontally.
+- The corner widget shows the current target colour and a ring counting down to the next change. The basket is tinted with that same colour.
+- Catching a shape of the target colour scores points; catching any other colour subtracts them. Missed shapes cost nothing.
+- The round ends when the timer runs out. The best score is stored separately for each difficulty.
 
-| Рівень | Пауза між фігурами | Швидкість падіння | Зміна кольору | Очки / штраф |
+| Difficulty | Spawn interval | Fall speed | Colour change | Points / penalty |
 |---|---|---|---|---|
-| Easy | 0.9–1.6 с | 2.0–2.8 | 8 с | +10 / −3 |
-| Normal | 0.6–1.4 с | 2.5–3.5 | 6 с | +10 / −5 |
-| Hard | 0.35–0.8 с | 3.5–4.8 | 4 с | +15 / −10 |
+| Easy | 0.9–1.6 s | 2.0–2.8 | 8 s | +10 / −3 |
+| Normal | 0.6–1.4 s | 2.5–3.5 | 6 s | +10 / −5 |
+| Hard | 0.35–0.8 s | 3.5–4.8 | 4 s | +15 / −10 |
 
-## Технічний стек
+## Tech stack
 
 - **Unity 6** (6000.3.15f1), C#
 - **URP 2D** (Renderer2D, Global Light 2D)
-- **Input System** — джойстик читає `Pointer.current`, тож миша й тач працюють однаково
-- **uGUI + TextMeshPro** — HUD, меню, панелі паузи та результату
-- **ScriptableObject** — палітра кольорів і налаштування складності як дані, а не як код
-- **`UnityEngine.Pool.ObjectPool`** — пул фігур, окремий на кожен префаб форми
-- **Assembly Definition** (`ColorMatch.asmdef`) з `rootNamespace: ColorMatch`
+- **Input System** — the joystick reads `Pointer.current`, so mouse and touch behave identically
 
-Окремих залежностей на кшталт DOTween чи Zenject немає навмисно: для проєкту такого розміру вони додали б більше налаштування, ніж користі.
-
-## Структура проєкту
+## Project structure
 
 ```
 Assets/_Project/
-├── Art/            спрайти (фігури, кошик, UI, FX) і матеріали частинок
-├── Audio/SFX/      звуки ловіння та кінця раунду
+├── Art/            sprites (shapes, basket, UI, FX) and particle materials
+├── Audio/SFX/      catch and round-end sounds
 ├── Data/           ShapePalette + Difficulty/{Easy,Normal,Hard}
 ├── Prefabs/
 │   ├── Gameplay/   Basket
-│   ├── Shapes/     шість форм
+│   ├── Shapes/     six shapes
 │   └── UI/         UIButton, DifficultyButton, HUD, GameOverPanel, PausePanel, Joystick
 ├── Scenes/         Menu, Game
 └── Scripts/
@@ -62,16 +56,16 @@ Assets/_Project/
     └── UI/         MenuScreen, ScoreView, TimerView, TargetColorView, GameOverPanel, PausePanel
 ```
 
-Кілька рішень, які визначають архітектуру:
+A few decisions that shape the architecture:
 
-- **`GameManager` володіє правилами й станом раунду** — очками, таймером, паузою. Кошик лише повідомляє «я спіймав ось цю фігуру» однією подією, а вже менеджер вирішує, збіг це чи ні. Тому правила лежать в одному місці.
-- **Види підписані на події й нічого не опитують** — `ScoreView`, `TimerView`, `TargetColorView` та панелі оновлюються лише тоді, коли щось справді змінилось.
-- **Фігури не знають про пул** — кожна піднімає подію `Released`, а спавнер, який на неї підписаний, повертає об'єкт у пул. Падіння за нижній край ловить окрема тригер-зона.
-- **Пауза й кінець раунду зупиняють гру через `Time.timeScale`** — одним рядком завмирає і фізика, і спавнер, і таймер кольору.
+- **`GameManager` owns the rules and the round state** — score, timer and pause. The basket only reports "I caught this shape" through a single event, and the manager decides whether it was a match. That keeps every rule in one place.
+- **Views subscribe to events instead of polling** — `ScoreView`, `TimerView`, `TargetColorView` and the panels refresh only when something actually changes.
+- **Shapes know nothing about the pool** — each one raises a `Released` event, and the spawner listening to it returns the object to the pool. A separate trigger zone catches shapes that fall past the bottom edge.
+- **Pause and round end freeze the game through `Time.timeScale`** — one line stops the physics, the spawner and the colour timer at once.
 
-## Як запустити
+## Running the project
 
-1. Відкрити проєкт в **Unity 6000.3.15f1** або новішій.
-2. Відкрити сцену `Assets/_Project/Scenes/Menu.unity` і натиснути Play.
+1. Open the project in **Unity 6000.3.15f1** or newer.
+2. Open `Assets/_Project/Scenes/Menu.unity` and press Play.
 
-Обидві сцени вже додані в Build Settings у порядку `Menu` → `Game`.
+Both scenes are already registered in Build Settings in the order `Menu` → `Game`.
